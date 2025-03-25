@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #d2b48c; /* Light brown */
+        }
+        #todo-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px;
+            background: #f4f4f4;
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+            transition: background 0.3s;
+            flex-wrap: wrap;
+        }
+        li:hover {
+            background: #e0e0e0;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+        button {
+            cursor: pointer;
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .task-meta {
+            font-size: 0.8em;
+            color: #666;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <div id="todo-container">
+        <input type="text" id="todo-input" placeholder="Add a new task" onkeypress="handleKeyPress(event)">
+        <input type="datetime-local" id="task-time">
+        <button onclick="addTask()">Add</button>
+        <button onclick="clearTasks()">Clear All</button>
+        <ul id="todo-list"></ul>
+    </div>
+    
+    <script>
+        function addTask() {
+            let input = document.getElementById("todo-input");
+            let task = input.value.trim();
+            let timeInput = document.getElementById("task-time").value;
+            if (task === "") return;
+            
+            let list = document.getElementById("todo-list");
+            let li = document.createElement("li");
+            let formattedTime = timeInput ? new Date(timeInput).toLocaleString() : "No time set";
+            
+            li.innerHTML = `<span onclick="toggleComplete(this)">${task}</span>
+                            <span class="task-meta">(${formattedTime})</span>
+                            <button onclick="editTask(this)">Edit</button>
+                            <button onclick="removeTask(this)">Delete</button>`;
+            list.appendChild(li);
+            
+            input.value = "";
+            document.getElementById("task-time").value = "";
+        }
+
+        function removeTask(button) {
+            let li = button.parentElement;
+            li.remove();
+        }
+
+        function toggleComplete(task) {
+            task.classList.toggle("completed");
+        }
+
+        function clearTasks() {
+            document.getElementById("todo-list").innerHTML = "";
+        }
+        
+        function editTask(button) {
+            let li = button.parentElement;
+            let span = li.querySelector("span");
+            let newTask = prompt("Edit your task:", span.textContent);
+            if (newTask !== null && newTask.trim() !== "") {
+                span.textContent = newTask.trim();
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                addTask();
+            }
+        }
+    </script>
+</body>
+</html>
